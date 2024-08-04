@@ -8,7 +8,7 @@ import ttkbootstrap as tb
 
 #Substitute your credentials here
 username = "root"
-password = "password"
+password = ""
 
 # MySQL connection code
 my_db = mysql.connector.connect(
@@ -23,8 +23,8 @@ my_conn = my_db.cursor()
 window = tb.Window(themename="darkly")
 window.geometry("1366x768")
 window.title("Hotel Management")
-logo_path = "D:\Py\HMS\logo.ico"      #Give the absolute path of your logo.ico file here
-window.iconbitmap(logo_path)
+# logo_path = "D:\Py\HMS\logo.ico"      #Give the absolute path of your logo.ico file here
+# window.iconbitmap(logo_path)
 window.style.configure('my.Treeview', rowheight=25)
 
 # Create the heading frame
@@ -123,7 +123,7 @@ def addcust():
     r=[]
     r.append(room)
     value = (r)
-    sql = 'select vacancy from room where rno=%s'
+    sql = 'select vacancy from room where room_number=%s'
     my_conn.execute(sql, value)
     rm=[]
     for x in my_conn:
@@ -154,7 +154,7 @@ def addcust():
         x.append(room)
         x.extend(max)
         value1 = (x)
-        sql = 'update customer set cost=((%s+1)*(select price from room where rno=%s)) where cid=%s'
+        sql = 'update customer set cost=((%s+1)*(select price from room where room_number=%s)) where cid=%s'
         my_conn.execute(sql, value1)
 
         l1 = []
@@ -168,7 +168,7 @@ def addcust():
         y.append("Occuppied")
         y.append(room)
         values = (y)
-        sql = "update room set vacancy=%s where rno =%s"
+        sql = "update room set vacancy=%s where room_number =%s"
         my_conn.execute(sql, values)
 
         my_db.commit()
@@ -180,7 +180,7 @@ def addcust():
     def room_occupied():
         r = tk.Tk()
         r.title('Error')
-        r.iconbitmap(logo_path)
+        # r.iconbitmap(logo_path)
         r.geometry('200x100+583+284')
         l = tk.Label(r, text='Room Occuppied')
         l.pack(padx=10, pady=10)
@@ -231,7 +231,7 @@ def add_room():
     
     win_addroom = tb.Window(title="Insert Room", themename="darkly")
     win_addroom.geometry('250x175+583+284')
-    win_addroom.iconbitmap(logo_path)
+    # win_addroom.iconbitmap(logo_path)
     f = tk.Frame(win_addroom)
     f.pack()
     l = tk.Label(f, text="Room details", font='Arial 11 bold underline')
@@ -262,7 +262,7 @@ def edit_room():
         l.append(roomvacancy.get())
         l.append(selected_roomno)
         values=(l)
-        sql='update room set rno=%s,type=%s,price=%s,vacancy=%s where rno=%s'
+        sql='update room set room_number=%s,type=%s,price=%s,vacancy=%s where room_number=%s'
         my_conn.execute(sql,values)
         my_db.commit()
         room_display()
@@ -270,7 +270,7 @@ def edit_room():
 
     win_editroom = tb.Window(title="Edit Room", themename="darkly")
     win_editroom.geometry('250x250+583+284')
-    win_editroom.iconbitmap(logo_path)
+    # win_editroom.iconbitmap(logo_path)
     f = tk.Frame(win_editroom)
     f.pack()
     l = tk.Label(f, text="Room details", font='Arial 11 bold underline')
@@ -312,14 +312,14 @@ def delete_room():
         l = []
         l.append(selected_roomno)
         values = (l)
-        sql = "delete from room where rno=%s"
+        sql = "delete from room where room_number=%s"
         my_conn.execute(sql, values)
         my_db.commit()
         room_display()
     win = tk.Tk()
     win.geometry('400x100+583+284')
     win.title('Delete Room')
-    win.iconbitmap(logo_path)
+    # win.iconbitmap(logo_path)
     lab = tk.Label(win, text="Are you sure you want to delete the room ?")
     lab.grid(padx=(2, 0), pady=(10, 10), sticky='W')
     conf = tk.Button(win, text="Delete", width=15, command=delete_room_confirm)
@@ -332,7 +332,7 @@ def delete_room():
 def roomview():
     roomwindow = tk.Tk()
     roomwindow.geometry('975x400')
-    roomwindow.iconbitmap(logo_path)
+    # roomwindow.iconbitmap(logo_path)
     roomwindow.title('Rooms')
 
     main_frame = tk.Frame(roomwindow, bg='white', width=975, height=300)
@@ -391,7 +391,7 @@ def on_treeview_select(event):
     global selected_proof
     global selected_checkin
     global selected_checkout
-    global selected_rno
+    global selected_room_number
     global selected_cost
     global selected_status
     selected_item = treeview.item(treeview.selection()[0])
@@ -401,7 +401,7 @@ def on_treeview_select(event):
     selected_proof = selected_item_values[2]
     selected_checkin = selected_item_values[3]
     selected_checkout = selected_item_values[4]
-    selected_rno = selected_item_values[5]
+    selected_room_number = selected_item_values[5]
     selected_cost = selected_item_values[6]
     selected_status = selected_item_values[7]
 treeview.bind("<<TreeviewSelect>>", on_treeview_select)
@@ -420,7 +420,7 @@ def delete():
     win = tk.Tk()
     win.geometry('400x100+583+284')
     win.title('Delete')
-    win.iconbitmap(logo_path)
+    # win.iconbitmap(logo_path)
     lab = tk.Label(win, text="Are you sure you want to delete the customer ?")
     lab.grid(padx=(2, 0), pady=(10, 10), sticky='W')
     conf = tk.Button(win, text="Delete", width=15, command=delete_confirm)
@@ -435,9 +435,9 @@ def checkout():
         win.destroy()
         l = []
         l.append("Vacant")
-        l.append(selected_rno)
+        l.append(selected_room_number)
         values = (l)
-        sql = "update room set vacancy=%s where rno =%s"
+        sql = "update room set vacancy=%s where room_number =%s"
         my_conn.execute(sql, values)
         my_db.commit()
 
@@ -452,7 +452,7 @@ def checkout():
     win = tk.Tk()
     win.geometry('300x100+583+284')
     win.title('Checkout')
-    win.iconbitmap(logo_path)
+    # win.iconbitmap(logo_path)
     lab = tk.Label(win, text="Confirm Checkout ?")
     lab.grid(padx=(2, 0), pady=(10, 10), sticky='W')
     conf = tk.Button(win, text="Confirm", width=15, command=checkout_confirm)
@@ -496,7 +496,7 @@ def edit():
     proof_entry.insert(0,selected_proof)
     checkin_entry.insert(0,selected_checkin)
     checkout_entry.insert(0,selected_checkout)
-    room_entry.insert(0,selected_rno)
+    room_entry.insert(0,selected_room_number)
     cost_entry.insert(0,selected_cost)
     status_entry.insert(0,selected_status)
     edit_button.configure(text="CONFIRM EDIT",bootstyle="info,outline",command=editconf)
